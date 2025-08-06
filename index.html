@@ -1,43 +1,64 @@
+
+<script src="script.js"></script>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EmojiCrypt 🔐</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>EmojiCrypt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    textarea, input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #6200ea;
+      color: white;
+      border: none;
+      margin-bottom: 20px;
+    }
+    .tab {
+      display: none;
+    }
+    .tab.active {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Text → Emojis</h1>
+  <h1>🔐 EmojiCrypt</h1>
 
-    <div class="tabs">
-      <button onclick="showTab('encrypt')">Encrypt Text</button>
-      <button onclick="showTab('decrypt')">Decrypt Emojis</button>
-    </div>
+  <div>
+    <button onclick="showTab('encryptTab')">🔒 Verschlüsseln</button>
+    <button onclick="showTab('decryptTab')">🔓 Entschlüsseln</button>
+  </div>
 
-    <div id="encrypt" class="tab active">
-      <label>1. Type a message</label>
-      <textarea id="message" placeholder="Hello world..."></textarea>
+  <div id="encryptTab" class="tab active">
+    <h2>Nachricht verschlüsseln</h2>
+    <textarea id="message" placeholder="Nachricht eingeben..."></textarea>
+    <input type="text" id="password" placeholder="Passwort eingeben..." />
+    <button onclick="encrypt()">🔐 Verschlüsseln</button>
+    <p><strong>Verschlüsselt:</strong></p>
+    <div id="encryptedOutput" style="white-space: pre-wrap;"></div>
+  </div>
 
-      <label>2. Set a password</label>
-      <input type="password" id="password" placeholder="E.g. 1234" />
-
-      <button onclick="encrypt()">🔐 Encrypt Text</button>
-      <p id="encryptedOutput"></p>
-    </div>
-
-    <div id="decrypt" class="tab">
-      <label>1. Paste encrypted emojis</label>
-      <textarea id="emojiInput" placeholder="Paste encrypted emojis here"></textarea>
-
-      <label>2. Type the password</label>
-      <input type="password" id="decryptPassword" placeholder="E.g. 1234" />
-
-      <button onclick="decrypt()">🔓 Decrypt Emojis</button>
-      <p id="decryptedOutput"></p>
-    </div>
-
-    <footer>Crafted with ❤️ by Jeffo191</footer>
+  <div id="decryptTab" class="tab">
+    <h2>Nachricht entschlüsseln</h2>
+    <textarea id="emojiInput" placeholder="🔐-Nachricht einfügen..."></textarea>
+    <input type="text" id="decryptPassword" placeholder="Passwort eingeben..." />
+    <button onclick="decrypt()">🔓 Entschlüsseln</button>
+    <p><strong>Entschlüsselt:</strong></p>
+    <div id="decryptedOutput" style="white-space: pre-wrap;"></div>
   </div>
 
   <script src="script.js"></script>
