@@ -1,0 +1,54 @@
+body {
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+}
+
+textarea, input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background: #222;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px;
+}
+
+button {
+  background: #444;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  margin-top: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #666;
+}
+
+.tabs button {
+  margin: 5px;
+}
+
+.tab {
+  display: none;
+}
+
+.tab.active {
+  display: block;
+}
+
+footer {
+  margin-top: 40px;
+  font-size: 0.9em;
+  color: #888;
+}
