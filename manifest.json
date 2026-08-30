@@ -1,0 +1,15 @@
+{
+  "name": "EmojiCrypt",
+  "short_name": "EmojiCrypt",
+  "description": "Lokale, offline nutzbare Verschlüsselung ohne App-seitige persistente Speicherung.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0c10",
+  "theme_color": "#0a0c10",
+  "lang": "de",
+  "dir": "ltr",
+  "orientation": "any",
+  "categories": ["security", "utilities"],
+  "prefer_related_applications": false
+}
