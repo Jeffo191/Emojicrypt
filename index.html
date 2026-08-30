@@ -1,66 +1,152 @@
-
-<script src="script.js"></script>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EmojiCrypt</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src 'none'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>EmojiCrypt — offline & ohne Speicherung</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f9f9f9;
-    }
-    textarea, input {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-      background-color: #6200ea;
-      color: white;
-      border: none;
-      margin-bottom: 20px;
-    }
-    .tab {
-      display: none;
-    }
-    .tab.active {
-      display: block;
-    }
+    :root{color-scheme:dark;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:#0a0c10;color:#f6f7fb;padding:24px;display:grid;place-items:center}
+    main{width:min(760px,100%)} .card{background:#11151b;border:1px solid #29313c;border-radius:20px;padding:24px}
+    h1{font-size:clamp(2rem,7vw,3.4rem);margin:0 0 8px} h2{margin:0 0 14px} p{line-height:1.55;color:#b9c3cf}
+    .privacy{padding:13px 15px;border:1px solid #31523a;background:#102017;border-radius:12px;color:#c9f5d4;margin:18px 0}
+    .warning{padding:13px 15px;border:1px solid #5f5030;background:#241e10;border-radius:12px;color:#f5dda7;margin:18px 0}
+    .tabs,.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+    button,input,textarea{font:inherit} button{border:1px solid #37414c;background:#1a2028;color:#fff;border-radius:11px;padding:12px 15px;cursor:pointer}
+    button:hover{background:#242c36}.tabs button.active{outline:2px solid #927cff}.primary{background:#6b4bff;border-color:#846cff;font-weight:700}
+    textarea,input{width:100%;background:#0b0f14;color:#fff;border:1px solid #38434f;border-radius:11px;padding:12px;margin:6px 0 14px}
+    textarea{min-height:150px;resize:vertical}label{font-weight:700}.tab{display:none}.tab.active{display:block}
+    .output{min-height:90px;background:#0b0f14;border:1px dashed #44515f;border-radius:11px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+    .status{min-height:1.5em;color:#ffd48a}.clear-all{width:100%;margin-top:14px}.fine{font-size:.9rem;color:#8d99a7}
+    @media(max-width:560px){.actions{grid-template-columns:1fr}}
   </style>
 </head>
-<body>
-  <h1>🔐 EmojiCrypt</h1>
+<body autocomplete="off">
+<main>
+  <section class="card">
+    <h1>🔐 EmojiCrypt</h1>
+    <p>Starke Verschlüsselung direkt im Arbeitsspeicher deines Browsers. Keine App-Datenbank, kein Backend und keine dauerhafte Speicherung.</p>
+    <div class="privacy"><strong>Zero App Storage:</strong> keine Cookies, kein LocalStorage, kein SessionStorage, kein IndexedDB, keine Cache-API, kein Service Worker, keine Analytics, keine Telemetrie, keine Uploads und keine Netzwerk-API.</div>
+    <div class="warning"><strong>Für echte Null-Verbindungsmetadaten:</strong> diese Datei lokal/offline öffnen. Beim Aufruf über GitHub Pages entstehen außerhalb von EmojiCrypt zwangsläufig technische HTTP-Verbindungsdaten beim Hoster.</div>
 
-  <div>
-    <button onclick="showTab('encryptTab')">🔒 Verschlüsseln</button>
-    <button onclick="showTab('decryptTab')">🔓 Entschlüsseln</button>
-  </div>
+    <div class="tabs" role="tablist" aria-label="Modus">
+      <button id="showEncrypt" class="active" type="button" aria-selected="true">🔒 Verschlüsseln</button>
+      <button id="showDecrypt" type="button" aria-selected="false">🔓 Entschlüsseln</button>
+    </div>
 
-  <div id="encryptTab" class="tab active">
-    <h2>Nachricht verschlüsseln</h2>
-    <textarea id="message" placeholder="Nachricht eingeben..."></textarea>
-    <input type="text" id="password" placeholder="Passwort eingeben..." />
-    <button onclick="encrypt()">🔐 Verschlüsseln</button>
-    <p><strong>Verschlüsselt:</strong></p>
-    <div id="encryptedOutput" style="white-space: pre-wrap;"></div>
-  </div>
+    <section id="encryptTab" class="tab active">
+      <h2>Verschlüsseln</h2>
+      <label for="message">Nachricht</label>
+      <textarea id="message" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Nachricht eingeben …"></textarea>
+      <label for="password">Passwort</label>
+      <input id="password" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Starkes Passwort">
+      <div class="actions"><button id="encryptButton" class="primary" type="button">🔐 Verschlüsseln</button><button id="clearEncrypt" type="button">Leeren</button></div>
+      <p id="encryptStatus" class="status" aria-live="polite"></p>
+      <div id="encryptedOutput" class="output" aria-label="Verschlüsselte Nachricht"></div>
+    </section>
 
-  <div id="decryptTab" class="tab">
-    <h2>Nachricht entschlüsseln</h2>
-    <textarea id="emojiInput" placeholder="🔐-Nachricht einfügen..."></textarea>
-    <input type="text" id="decryptPassword" placeholder="Passwort eingeben..." />
-    <button onclick="decrypt()">🔓 Entschlüsseln</button>
-    <p><strong>Entschlüsselt:</strong></p>
-    <div id="decryptedOutput" style="white-space: pre-wrap;"></div>
-  </div>
+    <section id="decryptTab" class="tab">
+      <h2>Entschlüsseln</h2>
+      <label for="encryptedInput">EmojiCrypt-Nachricht</label>
+      <textarea id="encryptedInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="EmojiCrypt-Nachricht einfügen …"></textarea>
+      <label for="decryptPassword">Passwort</label>
+      <input id="decryptPassword" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Passwort">
+      <div class="actions"><button id="decryptButton" class="primary" type="button">🔓 Entschlüsseln</button><button id="clearDecrypt" type="button">Leeren</button></div>
+      <p id="decryptStatus" class="status" aria-live="polite"></p>
+      <div id="decryptedOutput" class="output" aria-label="Entschlüsselte Nachricht"></div>
+    </section>
 
-  <script src="script.js"></script>
+    <button id="clearAll" class="clear-all" type="button">Alles sofort aus dem Fenster löschen</button>
+    <p class="fine">AES-256-GCM · PBKDF2-SHA-256 · zufälliges Salt und IV · nur Web Crypto · keine externen Bibliotheken.</p>
+  </section>
+</main>
+<script>
+'use strict';
+(() => {
+  const $ = id => document.getElementById(id);
+  const enc = new TextEncoder();
+  const dec = new TextDecoder();
+  const ITERATIONS = 310000;
+  const PREFIX = '🔐EC2:';
+
+  const bytesToB64 = bytes => {
+    let s='';
+    for(let i=0;i<bytes.length;i+=0x8000){s+=String.fromCharCode(...bytes.subarray(i,i+0x8000));}
+    return btoa(s);
+  };
+  const b64ToBytes = value => Uint8Array.from(atob(value), c => c.charCodeAt(0));
+  const wipe = value => { if(value && typeof value.fill === 'function') value.fill(0); };
+
+  async function keyFromPassword(passwordBytes, salt){
+    const material = await crypto.subtle.importKey('raw', passwordBytes, 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      {name:'PBKDF2', salt, iterations:ITERATIONS, hash:'SHA-256'},
+      material,
+      {name:'AES-GCM', length:256},
+      false,
+      ['encrypt','decrypt']
+    );
+  }
+
+  async function encrypt(){
+    const textEl=$('message'), passEl=$('password'), out=$('encryptedOutput'), status=$('encryptStatus');
+    status.textContent=''; out.textContent='';
+    if(!window.crypto?.subtle){status.textContent='Web Crypto ist in diesem Browser nicht verfügbar.';return;}
+    if(!textEl.value || !passEl.value){status.textContent='Nachricht und Passwort werden benötigt.';return;}
+    let plainBytes, passBytes, salt, iv;
+    try{
+      plainBytes=enc.encode(textEl.value); passBytes=enc.encode(passEl.value);
+      salt=crypto.getRandomValues(new Uint8Array(16)); iv=crypto.getRandomValues(new Uint8Array(12));
+      const key=await keyFromPassword(passBytes,salt);
+      const cipher=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plainBytes));
+      out.textContent=PREFIX+[bytesToB64(salt),bytesToB64(iv),bytesToB64(cipher)].join('.');
+      wipe(cipher);
+      textEl.value=''; passEl.value='';
+      status.textContent='Verschlüsselt. Klartext und Passwort wurden aus den Eingabefeldern entfernt.';
+    }catch{status.textContent='Verschlüsselung fehlgeschlagen.';}
+    finally{wipe(plainBytes);wipe(passBytes);wipe(salt);wipe(iv);}
+  }
+
+  async function decrypt(){
+    const inEl=$('encryptedInput'), passEl=$('decryptPassword'), out=$('decryptedOutput'), status=$('decryptStatus');
+    status.textContent=''; out.textContent='';
+    if(!window.crypto?.subtle){status.textContent='Web Crypto ist in diesem Browser nicht verfügbar.';return;}
+    if(!inEl.value || !passEl.value){status.textContent='EmojiCrypt-Nachricht und Passwort werden benötigt.';return;}
+    let passBytes,salt,iv,cipher,plain;
+    try{
+      const value=inEl.value.trim();
+      if(!value.startsWith(PREFIX)) throw new Error();
+      const parts=value.slice(PREFIX.length).split('.');
+      if(parts.length!==3) throw new Error();
+      salt=b64ToBytes(parts[0]); iv=b64ToBytes(parts[1]); cipher=b64ToBytes(parts[2]); passBytes=enc.encode(passEl.value);
+      if(salt.length!==16 || iv.length!==12) throw new Error();
+      const key=await keyFromPassword(passBytes,salt);
+      plain=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher));
+      out.textContent=dec.decode(plain);
+      inEl.value=''; passEl.value='';
+      status.textContent='Entschlüsselt. Eingabe und Passwort wurden aus den Feldern entfernt.';
+    }catch{out.textContent='';status.textContent='Entschlüsselung fehlgeschlagen: falsches Passwort oder ungültige Nachricht.';}
+    finally{wipe(passBytes);wipe(salt);wipe(iv);wipe(cipher);wipe(plain);}
+  }
+
+  function clearEncrypt(){ $('message').value='';$('password').value='';$('encryptedOutput').textContent='';$('encryptStatus').textContent=''; }
+  function clearDecrypt(){ $('encryptedInput').value='';$('decryptPassword').value='';$('decryptedOutput').textContent='';$('decryptStatus').textContent=''; }
+  function clearAll(){ clearEncrypt();clearDecrypt(); }
+  function show(which){
+    const e=which==='encrypt';
+    $('encryptTab').classList.toggle('active',e); $('decryptTab').classList.toggle('active',!e);
+    $('showEncrypt').classList.toggle('active',e); $('showDecrypt').classList.toggle('active',!e);
+    $('showEncrypt').setAttribute('aria-selected',String(e)); $('showDecrypt').setAttribute('aria-selected',String(!e));
+  }
+
+  $('encryptButton').addEventListener('click',encrypt); $('decryptButton').addEventListener('click',decrypt);
+  $('clearEncrypt').addEventListener('click',clearEncrypt); $('clearDecrypt').addEventListener('click',clearDecrypt); $('clearAll').addEventListener('click',clearAll);
+  $('showEncrypt').addEventListener('click',()=>show('encrypt')); $('showDecrypt').addEventListener('click',()=>show('decrypt'));
+  window.addEventListener('pagehide',clearAll); window.addEventListener('beforeunload',clearAll);
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') clearAll(); });
+})();
+</script>
 </body>
 </html>
