@@ -18,6 +18,7 @@
     .tabs,.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
     button,input,textarea{font:inherit} button{border:1px solid #37414c;background:#1a2028;color:#fff;border-radius:11px;padding:12px 15px;cursor:pointer}
     button:hover{background:#242c36}.tabs button.active{outline:2px solid #927cff}.primary{background:#6b4bff;border-color:#846cff;font-weight:700}
+    .copy-cta{width:100%;margin-top:10px;background:#6b4bff;border-color:#846cff;font-weight:800}.copy-cta:disabled{opacity:.45;cursor:not-allowed}
     textarea,input{width:100%;background:#0b0f14;color:#fff;border:1px solid #38434f;border-radius:11px;padding:12px;margin:6px 0 14px}
     textarea{min-height:150px;resize:vertical}label{font-weight:700}.tab{display:none}.tab.active{display:block}
     .output{min-height:90px;background:#0b0f14;border:1px dashed #44515f;border-radius:11px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere}
@@ -32,34 +33,20 @@
     <p>Starke Verschlüsselung direkt im Arbeitsspeicher deines Browsers. Keine App-Datenbank, kein Backend und keine dauerhafte Speicherung.</p>
     <div class="privacy"><strong>Zero App Storage:</strong> keine Cookies, kein LocalStorage, kein SessionStorage, kein IndexedDB, keine Cache-API, kein Service Worker, keine Analytics, keine Telemetrie, keine Uploads und keine Netzwerk-API.</div>
     <div class="warning"><strong>Für echte Null-Verbindungsmetadaten:</strong> diese Datei lokal/offline öffnen. Beim Aufruf über GitHub Pages entstehen außerhalb von EmojiCrypt zwangsläufig technische HTTP-Verbindungsdaten beim Hoster.</div>
-
-    <div class="tabs" role="tablist" aria-label="Modus">
-      <button id="showEncrypt" class="active" type="button" aria-selected="true">🔒 Verschlüsseln</button>
-      <button id="showDecrypt" type="button" aria-selected="false">🔓 Entschlüsseln</button>
-    </div>
-
+    <div class="tabs" role="tablist" aria-label="Modus"><button id="showEncrypt" class="active" type="button" aria-selected="true">🔒 Verschlüsseln</button><button id="showDecrypt" type="button" aria-selected="false">🔓 Entschlüsseln</button></div>
     <section id="encryptTab" class="tab active">
-      <h2>Verschlüsseln</h2>
-      <label for="message">Nachricht</label>
-      <textarea id="message" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Nachricht eingeben …"></textarea>
-      <label for="password">Passwort</label>
-      <input id="password" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Starkes Passwort">
+      <h2>Verschlüsseln</h2><label for="message">Nachricht</label><textarea id="message" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Nachricht eingeben …"></textarea>
+      <label for="password">Passwort</label><input id="password" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Starkes Passwort">
       <div class="actions"><button id="encryptButton" class="primary" type="button">🔐 Verschlüsseln</button><button id="clearEncrypt" type="button">Leeren</button></div>
-      <p id="encryptStatus" class="status" aria-live="polite"></p>
-      <div id="encryptedOutput" class="output" aria-label="Verschlüsselte Nachricht"></div>
+      <p id="encryptStatus" class="status" aria-live="polite"></p><div id="encryptedOutput" class="output" aria-label="Verschlüsselte Nachricht"></div>
+      <button id="copyEncrypted" class="copy-cta" type="button" disabled>📋 Verschlüsselte Nachricht kopieren</button>
     </section>
-
     <section id="decryptTab" class="tab">
-      <h2>Entschlüsseln</h2>
-      <label for="encryptedInput">EmojiCrypt-Nachricht</label>
-      <textarea id="encryptedInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="EmojiCrypt-Nachricht einfügen …"></textarea>
-      <label for="decryptPassword">Passwort</label>
-      <input id="decryptPassword" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Passwort">
+      <h2>Entschlüsseln</h2><label for="encryptedInput">EmojiCrypt-Nachricht</label><textarea id="encryptedInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="EmojiCrypt-Nachricht einfügen …"></textarea>
+      <label for="decryptPassword">Passwort</label><input id="decryptPassword" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Passwort">
       <div class="actions"><button id="decryptButton" class="primary" type="button">🔓 Entschlüsseln</button><button id="clearDecrypt" type="button">Leeren</button></div>
-      <p id="decryptStatus" class="status" aria-live="polite"></p>
-      <div id="decryptedOutput" class="output" aria-label="Entschlüsselte Nachricht"></div>
+      <p id="decryptStatus" class="status" aria-live="polite"></p><div id="decryptedOutput" class="output" aria-label="Entschlüsselte Nachricht"></div>
     </section>
-
     <button id="clearAll" class="clear-all" type="button">Alles sofort aus dem Fenster löschen</button>
     <p class="fine">AES-256-GCM · PBKDF2-SHA-256 · zufälliges Salt und IV · nur Web Crypto · keine externen Bibliotheken.</p>
   </section>
@@ -67,87 +54,15 @@
 <script>
 'use strict';
 (() => {
-  const $ = id => document.getElementById(id);
-  const enc = new TextEncoder();
-  const dec = new TextDecoder();
-  const ITERATIONS = 310000;
-  const PREFIX = '🔐EC2:';
-
-  const bytesToB64 = bytes => {
-    let s='';
-    for(let i=0;i<bytes.length;i+=0x8000){s+=String.fromCharCode(...bytes.subarray(i,i+0x8000));}
-    return btoa(s);
-  };
-  const b64ToBytes = value => Uint8Array.from(atob(value), c => c.charCodeAt(0));
-  const wipe = value => { if(value && typeof value.fill === 'function') value.fill(0); };
-
-  async function keyFromPassword(passwordBytes, salt){
-    const material = await crypto.subtle.importKey('raw', passwordBytes, 'PBKDF2', false, ['deriveKey']);
-    return crypto.subtle.deriveKey(
-      {name:'PBKDF2', salt, iterations:ITERATIONS, hash:'SHA-256'},
-      material,
-      {name:'AES-GCM', length:256},
-      false,
-      ['encrypt','decrypt']
-    );
-  }
-
-  async function encrypt(){
-    const textEl=$('message'), passEl=$('password'), out=$('encryptedOutput'), status=$('encryptStatus');
-    status.textContent=''; out.textContent='';
-    if(!window.crypto?.subtle){status.textContent='Web Crypto ist in diesem Browser nicht verfügbar.';return;}
-    if(!textEl.value || !passEl.value){status.textContent='Nachricht und Passwort werden benötigt.';return;}
-    let plainBytes, passBytes, salt, iv;
-    try{
-      plainBytes=enc.encode(textEl.value); passBytes=enc.encode(passEl.value);
-      salt=crypto.getRandomValues(new Uint8Array(16)); iv=crypto.getRandomValues(new Uint8Array(12));
-      const key=await keyFromPassword(passBytes,salt);
-      const cipher=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plainBytes));
-      out.textContent=PREFIX+[bytesToB64(salt),bytesToB64(iv),bytesToB64(cipher)].join('.');
-      wipe(cipher);
-      textEl.value=''; passEl.value='';
-      status.textContent='Verschlüsselt. Klartext und Passwort wurden aus den Eingabefeldern entfernt.';
-    }catch{status.textContent='Verschlüsselung fehlgeschlagen.';}
-    finally{wipe(plainBytes);wipe(passBytes);wipe(salt);wipe(iv);}
-  }
-
-  async function decrypt(){
-    const inEl=$('encryptedInput'), passEl=$('decryptPassword'), out=$('decryptedOutput'), status=$('decryptStatus');
-    status.textContent=''; out.textContent='';
-    if(!window.crypto?.subtle){status.textContent='Web Crypto ist in diesem Browser nicht verfügbar.';return;}
-    if(!inEl.value || !passEl.value){status.textContent='EmojiCrypt-Nachricht und Passwort werden benötigt.';return;}
-    let passBytes,salt,iv,cipher,plain;
-    try{
-      const value=inEl.value.trim();
-      if(!value.startsWith(PREFIX)) throw new Error();
-      const parts=value.slice(PREFIX.length).split('.');
-      if(parts.length!==3) throw new Error();
-      salt=b64ToBytes(parts[0]); iv=b64ToBytes(parts[1]); cipher=b64ToBytes(parts[2]); passBytes=enc.encode(passEl.value);
-      if(salt.length!==16 || iv.length!==12) throw new Error();
-      const key=await keyFromPassword(passBytes,salt);
-      plain=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher));
-      out.textContent=dec.decode(plain);
-      inEl.value=''; passEl.value='';
-      status.textContent='Entschlüsselt. Eingabe und Passwort wurden aus den Feldern entfernt.';
-    }catch{out.textContent='';status.textContent='Entschlüsselung fehlgeschlagen: falsches Passwort oder ungültige Nachricht.';}
-    finally{wipe(passBytes);wipe(salt);wipe(iv);wipe(cipher);wipe(plain);}
-  }
-
-  function clearEncrypt(){ $('message').value='';$('password').value='';$('encryptedOutput').textContent='';$('encryptStatus').textContent=''; }
-  function clearDecrypt(){ $('encryptedInput').value='';$('decryptPassword').value='';$('decryptedOutput').textContent='';$('decryptStatus').textContent=''; }
-  function clearAll(){ clearEncrypt();clearDecrypt(); }
-  function show(which){
-    const e=which==='encrypt';
-    $('encryptTab').classList.toggle('active',e); $('decryptTab').classList.toggle('active',!e);
-    $('showEncrypt').classList.toggle('active',e); $('showDecrypt').classList.toggle('active',!e);
-    $('showEncrypt').setAttribute('aria-selected',String(e)); $('showDecrypt').setAttribute('aria-selected',String(!e));
-  }
-
-  $('encryptButton').addEventListener('click',encrypt); $('decryptButton').addEventListener('click',decrypt);
-  $('clearEncrypt').addEventListener('click',clearEncrypt); $('clearDecrypt').addEventListener('click',clearDecrypt); $('clearAll').addEventListener('click',clearAll);
-  $('showEncrypt').addEventListener('click',()=>show('encrypt')); $('showDecrypt').addEventListener('click',()=>show('decrypt'));
-  window.addEventListener('pagehide',clearAll); window.addEventListener('beforeunload',clearAll);
-  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') clearAll(); });
+  const $=id=>document.getElementById(id),enc=new TextEncoder(),dec=new TextDecoder(),ITERATIONS=310000,PREFIX='🔐EC2:';
+  const bytesToB64=bytes=>{let s='';for(let i=0;i<bytes.length;i+=0x8000)s+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(s)};
+  const b64ToBytes=value=>Uint8Array.from(atob(value),c=>c.charCodeAt(0)); const wipe=value=>{if(value&&typeof value.fill==='function')value.fill(0)};
+  async function keyFromPassword(passwordBytes,salt){const material=await crypto.subtle.importKey('raw',passwordBytes,'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:ITERATIONS,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+  async function encrypt(){const textEl=$('message'),passEl=$('password'),out=$('encryptedOutput'),status=$('encryptStatus');status.textContent='';out.textContent='';$('copyEncrypted').disabled=true;if(!window.crypto?.subtle){status.textContent='Web Crypto ist in diesem Browser nicht verfügbar.';return}if(!textEl.value||!passEl.value){status.textContent='Nachricht und Passwort werden benötigt.';return}let plainBytes,passBytes,salt,iv;try{plainBytes=enc.encode(textEl.value);passBytes=enc.encode(passEl.value);salt=crypto.getRandomValues(new Uint8Array(16));iv=crypto.getRandomValues(new Uint8Array(12));const key=await keyFromPassword(passBytes,salt);const cipher=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plainBytes));out.textContent=PREFIX+[bytesToB64(salt),bytesToB64(iv),bytesToB64(cipher)].join('.');wipe(cipher);textEl.value='';passEl.value='';$('copyEncrypted').disabled=false;status.textContent='Verschlüsselt. Klartext und Passwort wurden aus den Eingabefeldern entfernt.'}catch{status.textContent='Verschlüsselung fehlgeschlagen.'}finally{wipe(plainBytes);wipe(passBytes);wipe(salt);wipe(iv)}}
+  async function copyEncrypted(){const value=$('encryptedOutput').textContent;if(!value)return;try{await navigator.clipboard.writeText(value);$('encryptStatus').textContent='Verschlüsselte Nachricht wurde in die Zwischenablage kopiert.'}catch{const range=document.createRange();range.selectNodeContents($('encryptedOutput'));const selection=getSelection();selection.removeAllRanges();selection.addRange(range);$('encryptStatus').textContent='Automatisches Kopieren wurde vom Browser blockiert. Text ist zum manuellen Kopieren markiert.'}}
+  async function decrypt(){const inEl=$('encryptedInput'),passEl=$('decryptPassword'),out=$('decryptedOutput'),status=$('decryptStatus');status.textContent='';out.textContent='';if(!window.crypto?.subtle){status.textContent='Web Crypto ist in diesem Browser nicht verfügbar.';return}if(!inEl.value||!passEl.value){status.textContent='EmojiCrypt-Nachricht und Passwort werden benötigt.';return}let passBytes,salt,iv,cipher,plain;try{const value=inEl.value.trim();if(!value.startsWith(PREFIX))throw new Error();const parts=value.slice(PREFIX.length).split('.');if(parts.length!==3)throw new Error();salt=b64ToBytes(parts[0]);iv=b64ToBytes(parts[1]);cipher=b64ToBytes(parts[2]);passBytes=enc.encode(passEl.value);if(salt.length!==16||iv.length!==12)throw new Error();const key=await keyFromPassword(passBytes,salt);plain=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher));out.textContent=dec.decode(plain);inEl.value='';passEl.value='';status.textContent='Entschlüsselt. Eingabe und Passwort wurden aus den Feldern entfernt.'}catch{out.textContent='';status.textContent='Entschlüsselung fehlgeschlagen: falsches Passwort oder ungültige Nachricht.'}finally{wipe(passBytes);wipe(salt);wipe(iv);wipe(cipher);wipe(plain)}}
+  function clearEncrypt(){$('message').value='';$('password').value='';$('encryptedOutput').textContent='';$('encryptStatus').textContent='';$('copyEncrypted').disabled=true}function clearDecrypt(){$('encryptedInput').value='';$('decryptPassword').value='';$('decryptedOutput').textContent='';$('decryptStatus').textContent=''}function clearAll(){clearEncrypt();clearDecrypt()}function show(which){const e=which==='encrypt';$('encryptTab').classList.toggle('active',e);$('decryptTab').classList.toggle('active',!e);$('showEncrypt').classList.toggle('active',e);$('showDecrypt').classList.toggle('active',!e);$('showEncrypt').setAttribute('aria-selected',String(e));$('showDecrypt').setAttribute('aria-selected',String(!e))}
+  $('encryptButton').addEventListener('click',encrypt);$('copyEncrypted').addEventListener('click',copyEncrypted);$('decryptButton').addEventListener('click',decrypt);$('clearEncrypt').addEventListener('click',clearEncrypt);$('clearDecrypt').addEventListener('click',clearDecrypt);$('clearAll').addEventListener('click',clearAll);$('showEncrypt').addEventListener('click',()=>show('encrypt'));$('showDecrypt').addEventListener('click',()=>show('decrypt'));window.addEventListener('pagehide',clearAll);window.addEventListener('beforeunload',clearAll);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')clearAll()});
 })();
 </script>
 </body>
