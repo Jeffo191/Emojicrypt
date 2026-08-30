@@ -10,7 +10,7 @@
   <title>EmojiCrypt — offline & ohne Speicherung</title>
   <style>
     :root{color-scheme:dark;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#0a0c10;color:#f6f7fb;padding:24px;display:grid;place-items:center}main{width:min(760px,100%)}.card{background:#11151b;border:1px solid #29313c;border-radius:20px;padding:24px}h1{font-size:clamp(2rem,7vw,3.4rem);margin:0 0 8px}h2{margin:0 0 14px}p{line-height:1.55;color:#b9c3cf}.privacy{padding:13px 15px;border:1px solid #31523a;background:#102017;border-radius:12px;color:#c9f5d4;margin:18px 0}.warning{padding:13px 15px;border:1px solid #5f5030;background:#241e10;border-radius:12px;color:#f5dda7;margin:18px 0}.tabs,.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}button,input,textarea{font:inherit}button{border:1px solid #37414c;background:#1a2028;color:#fff;border-radius:11px;padding:12px 15px;cursor:pointer}button:hover:not(:disabled){background:#242c36}.tabs button.active{outline:2px solid #927cff}.primary,.copy-cta{background:#6b4bff;border-color:#846cff;font-weight:800}.copy-cta{width:100%;margin-top:10px}.copy-cta:disabled{opacity:.45;cursor:not-allowed}textarea,input{width:100%;background:#0b0f14;color:#fff;border:1px solid #38434f;border-radius:11px;padding:12px;margin:6px 0 14px}textarea{min-height:150px;resize:vertical}label{font-weight:700}.tab{display:none}.tab.active{display:block}.output{min-height:90px;background:#0b0f14;border:1px dashed #44515f;border-radius:11px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere}.status{min-height:1.5em;color:#ffd48a}.clear-all{width:100%;margin-top:14px}.fine{font-size:.9rem;color:#8d99a7}@media(max-width:560px){.actions{grid-template-columns:1fr}}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#0a0c10;color:#f6f7fb;padding:24px;display:grid;place-items:center}main{width:min(760px,100%)}.card{background:#11151b;border:1px solid #29313c;border-radius:20px;padding:24px}h1{font-size:clamp(2rem,7vw,3.4rem);margin:0 0 8px}h2{margin:0 0 14px}p{line-height:1.55;color:#b9c3cf}.privacy{padding:13px 15px;border:1px solid #31523a;background:#102017;border-radius:12px;color:#c9f5d4;margin:18px 0}.tabs,.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}button,input,textarea{font:inherit}button{border:1px solid #37414c;background:#1a2028;color:#fff;border-radius:11px;padding:12px 15px;cursor:pointer}button:hover:not(:disabled){background:#242c36}.tabs button.active{outline:2px solid #927cff}.primary,.copy-cta{background:#6b4bff;border-color:#846cff;font-weight:800}.copy-cta{width:100%;margin-top:10px}.copy-cta:disabled{opacity:.45;cursor:not-allowed}textarea,input{width:100%;background:#0b0f14;color:#fff;border:1px solid #38434f;border-radius:11px;padding:12px;margin:6px 0 14px}textarea{min-height:150px;resize:vertical}label{font-weight:700}.tab{display:none}.tab.active{display:block}.output{min-height:90px;background:#0b0f14;border:1px dashed #44515f;border-radius:11px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere}.status{min-height:1.5em;color:#ffd48a}.clear-all{width:100%;margin-top:14px}.fine{font-size:.9rem;color:#8d99a7}@media(max-width:560px){.actions{grid-template-columns:1fr}}
   </style>
 </head>
 <body autocomplete="off">
@@ -19,36 +19,22 @@
     <h1>🔐 EmojiCrypt</h1>
     <p>Starke Verschlüsselung direkt im Arbeitsspeicher deines Browsers. Keine App-Datenbank, kein Backend und keine dauerhafte Speicherung.</p>
     <div class="privacy"><strong>Zero App Storage:</strong> keine Cookies, kein LocalStorage, kein SessionStorage, kein IndexedDB, keine Cache-API, kein Service Worker, keine Analytics, keine Telemetrie, keine Uploads und keine Netzwerk-API.</div>
-    <div class="warning"><strong>Für Null-Verbindungsmetadaten durch EmojiCrypt:</strong> die Dateien zuerst lokal speichern und dann offline öffnen. Der Download bzw. Aufruf über GitHub erzeugt beim Hoster normale Verbindungsdaten.</div>
-
     <div class="tabs" role="tablist" aria-label="Modus">
       <button id="showEncrypt" class="active" type="button" aria-selected="true" aria-controls="encryptTab">🔒 Verschlüsseln</button>
       <button id="showDecrypt" type="button" aria-selected="false" aria-controls="decryptTab">🔓 Entschlüsseln</button>
     </div>
-
     <section id="encryptTab" class="tab active">
-      <h2>Verschlüsseln</h2>
-      <label for="message">Nachricht</label>
-      <textarea id="message" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Nachricht eingeben …"></textarea>
-      <label for="password">Passwort</label>
-      <input id="password" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Mindestens 12 Zeichen">
+      <h2>Verschlüsseln</h2><label for="message">Nachricht</label><textarea id="message" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Nachricht eingeben …"></textarea>
+      <label for="password">Passwort</label><input id="password" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Mindestens 12 Zeichen">
       <div class="actions"><button id="encryptButton" class="primary" type="button">🔐 Verschlüsseln</button><button id="clearEncrypt" type="button">Leeren</button></div>
-      <p id="encryptStatus" class="status" aria-live="polite"></p>
-      <div id="encryptedOutput" class="output" aria-label="Verschlüsselte Nachricht"></div>
-      <button id="copyEncrypted" class="copy-cta" type="button" disabled>📋 Verschlüsselte Nachricht kopieren</button>
+      <p id="encryptStatus" class="status" aria-live="polite"></p><div id="encryptedOutput" class="output" aria-label="Verschlüsselte Nachricht"></div><button id="copyEncrypted" class="copy-cta" type="button" disabled>📋 Verschlüsselte Nachricht kopieren</button>
     </section>
-
     <section id="decryptTab" class="tab">
-      <h2>Entschlüsseln</h2>
-      <label for="encryptedInput">EmojiCrypt-Nachricht</label>
-      <textarea id="encryptedInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="EmojiCrypt-Nachricht einfügen …"></textarea>
-      <label for="decryptPassword">Passwort</label>
-      <input id="decryptPassword" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Passwort">
+      <h2>Entschlüsseln</h2><label for="encryptedInput">EmojiCrypt-Nachricht</label><textarea id="encryptedInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="EmojiCrypt-Nachricht einfügen …"></textarea>
+      <label for="decryptPassword">Passwort</label><input id="decryptPassword" type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Passwort">
       <div class="actions"><button id="decryptButton" class="primary" type="button">🔓 Entschlüsseln</button><button id="clearDecrypt" type="button">Leeren</button></div>
-      <p id="decryptStatus" class="status" aria-live="polite"></p>
-      <div id="decryptedOutput" class="output" aria-label="Entschlüsselte Nachricht"></div>
+      <p id="decryptStatus" class="status" aria-live="polite"></p><div id="decryptedOutput" class="output" aria-label="Entschlüsselte Nachricht"></div>
     </section>
-
     <button id="clearAll" class="clear-all" type="button">Alles sofort leeren</button>
     <p class="fine">AES-256-GCM · PBKDF2-SHA-256 · zufälliges Salt und IV · Web Crypto · keine externen Bibliotheken.</p>
   </section>
@@ -56,197 +42,20 @@
 <script>
 'use strict';
 (() => {
-  const $ = id => document.getElementById(id);
-  const encoder = new TextEncoder();
-  const decoder = new TextDecoder('utf-8', { fatal: true });
-  const ITERATIONS = 310000;
-  const PREFIX = '🔐EC3:';
-  const LEGACY_PREFIX = '🔐EC2:';
-  const EMOJI = ['😀','😁','😂','😃','😄','😅','😆','😉','😊','😋','😎','😍','😘','🥰','🤩','🤖'];
-  const EMOJI_TO_NIBBLE = new Map(EMOJI.map((value, index) => [value, index]));
-
-  const wipe = value => { if (value && typeof value.fill === 'function') value.fill(0); };
-  const concat = (...parts) => {
-    const size = parts.reduce((sum, part) => sum + part.length, 0);
-    const out = new Uint8Array(size);
-    let offset = 0;
-    for (const part of parts) { out.set(part, offset); offset += part.length; }
-    return out;
-  };
-  const bytesToEmoji = bytes => {
-    let out = '';
-    for (const byte of bytes) out += EMOJI[byte >>> 4] + EMOJI[byte & 15];
-    return out;
-  };
-  const emojiToBytes = value => {
-    const symbols = Array.from(value);
-    if (!symbols.length || symbols.length % 2 !== 0) throw new Error('invalid emoji payload');
-    const out = new Uint8Array(symbols.length / 2);
-    for (let i = 0; i < symbols.length; i += 2) {
-      const high = EMOJI_TO_NIBBLE.get(symbols[i]);
-      const low = EMOJI_TO_NIBBLE.get(symbols[i + 1]);
-      if (high === undefined || low === undefined) throw new Error('invalid emoji');
-      out[i / 2] = (high << 4) | low;
-    }
-    return out;
-  };
-  const b64ToBytes = value => Uint8Array.from(atob(value), c => c.charCodeAt(0));
-
-  async function keyFromPassword(passwordBytes, salt) {
-    const material = await crypto.subtle.importKey('raw', passwordBytes, 'PBKDF2', false, ['deriveKey']);
-    return crypto.subtle.deriveKey(
-      { name: 'PBKDF2', salt, iterations: ITERATIONS, hash: 'SHA-256' },
-      material,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['encrypt', 'decrypt']
-    );
-  }
-
-  async function encrypt() {
-    const textEl = $('message');
-    const passEl = $('password');
-    const out = $('encryptedOutput');
-    const status = $('encryptStatus');
-    status.textContent = '';
-    out.textContent = '';
-    $('copyEncrypted').disabled = true;
-
-    if (!globalThis.crypto?.subtle) { status.textContent = 'Web Crypto ist in diesem Browser nicht verfügbar.'; return; }
-    if (!textEl.value) { status.textContent = 'Bitte eine Nachricht eingeben.'; return; }
-    if (passEl.value.length < 12) { status.textContent = 'Das Passwort muss mindestens 12 Zeichen lang sein.'; return; }
-
-    let plainBytes, passBytes, salt, iv, cipher, payload;
-    try {
-      plainBytes = encoder.encode(textEl.value);
-      passBytes = encoder.encode(passEl.value);
-      salt = crypto.getRandomValues(new Uint8Array(16));
-      iv = crypto.getRandomValues(new Uint8Array(12));
-      const key = await keyFromPassword(passBytes, salt);
-      cipher = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plainBytes));
-      payload = concat(salt, iv, cipher);
-      out.textContent = PREFIX + bytesToEmoji(payload);
-      textEl.value = '';
-      passEl.value = '';
-      $('copyEncrypted').disabled = false;
-      status.textContent = 'Verschlüsselt. Klartext und Passwort wurden aus den Eingabefeldern entfernt.';
-    } catch {
-      status.textContent = 'Verschlüsselung fehlgeschlagen.';
-    } finally {
-      wipe(plainBytes); wipe(passBytes); wipe(salt); wipe(iv); wipe(cipher); wipe(payload);
-    }
-  }
-
-  async function parseCiphertext(value) {
-    if (value.startsWith(PREFIX)) {
-      const payload = emojiToBytes(value.slice(PREFIX.length));
-      if (payload.length < 45) { wipe(payload); throw new Error('payload too short'); }
-      return { payload, salt: payload.slice(0, 16), iv: payload.slice(16, 28), cipher: payload.slice(28) };
-    }
-    if (value.startsWith(LEGACY_PREFIX)) {
-      const parts = value.slice(LEGACY_PREFIX.length).split('.');
-      if (parts.length !== 3) throw new Error('invalid legacy payload');
-      const salt = b64ToBytes(parts[0]);
-      const iv = b64ToBytes(parts[1]);
-      const cipher = b64ToBytes(parts[2]);
-      if (salt.length !== 16 || iv.length !== 12 || cipher.length < 17) { wipe(salt); wipe(iv); wipe(cipher); throw new Error('invalid legacy lengths'); }
-      return { payload: null, salt, iv, cipher };
-    }
-    throw new Error('unknown format');
-  }
-
-  async function decrypt() {
-    const inEl = $('encryptedInput');
-    const passEl = $('decryptPassword');
-    const out = $('decryptedOutput');
-    const status = $('decryptStatus');
-    status.textContent = '';
-    out.textContent = '';
-
-    if (!globalThis.crypto?.subtle) { status.textContent = 'Web Crypto ist in diesem Browser nicht verfügbar.'; return; }
-    if (!inEl.value.trim() || !passEl.value) { status.textContent = 'EmojiCrypt-Nachricht und Passwort werden benötigt.'; return; }
-
-    let passBytes, parsed, plain;
-    try {
-      const value = inEl.value.trim();
-      passBytes = encoder.encode(passEl.value);
-      parsed = await parseCiphertext(value);
-      const key = await keyFromPassword(passBytes, parsed.salt);
-      plain = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: parsed.iv }, key, parsed.cipher));
-      out.textContent = decoder.decode(plain);
-      inEl.value = '';
-      passEl.value = '';
-      status.textContent = value.startsWith(LEGACY_PREFIX)
-        ? 'Entschlüsselt. Älteres EC2-Format erkannt; neue Nachrichten werden als Emoji-Format EC3 erzeugt.'
-        : 'Entschlüsselt. Eingabe und Passwort wurden aus den Feldern entfernt.';
-    } catch {
-      out.textContent = '';
-      status.textContent = 'Entschlüsselung fehlgeschlagen: falsches Passwort oder ungültige Nachricht.';
-    } finally {
-      wipe(passBytes); wipe(plain);
-      if (parsed) { wipe(parsed.payload); wipe(parsed.salt); wipe(parsed.iv); wipe(parsed.cipher); }
-    }
-  }
-
-  async function copyEncrypted() {
-    const value = $('encryptedOutput').textContent;
-    if (!value) return;
-    const status = $('encryptStatus');
-    try {
-      if (!navigator.clipboard?.writeText) throw new Error('clipboard unavailable');
-      await navigator.clipboard.writeText(value);
-      status.textContent = 'Verschlüsselte Nachricht wurde kopiert.';
-    } catch {
-      const field = document.createElement('textarea');
-      field.value = value;
-      field.setAttribute('readonly', '');
-      field.style.position = 'fixed';
-      field.style.opacity = '0';
-      document.body.appendChild(field);
-      field.select();
-      let copied = false;
-      try { copied = document.execCommand('copy'); } catch { copied = false; }
-      field.remove();
-      status.textContent = copied
-        ? 'Verschlüsselte Nachricht wurde kopiert.'
-        : 'Kopieren wurde vom Browser blockiert. Markiere die Ausgabe und kopiere sie manuell.';
-    }
-  }
-
-  function clearEncrypt() {
-    $('message').value = '';
-    $('password').value = '';
-    $('encryptedOutput').textContent = '';
-    $('encryptStatus').textContent = '';
-    $('copyEncrypted').disabled = true;
-  }
-  function clearDecrypt() {
-    $('encryptedInput').value = '';
-    $('decryptPassword').value = '';
-    $('decryptedOutput').textContent = '';
-    $('decryptStatus').textContent = '';
-  }
-  function clearAll() { clearEncrypt(); clearDecrypt(); }
-  function show(which) {
-    const encryptMode = which === 'encrypt';
-    $('encryptTab').classList.toggle('active', encryptMode);
-    $('decryptTab').classList.toggle('active', !encryptMode);
-    $('showEncrypt').classList.toggle('active', encryptMode);
-    $('showDecrypt').classList.toggle('active', !encryptMode);
-    $('showEncrypt').setAttribute('aria-selected', String(encryptMode));
-    $('showDecrypt').setAttribute('aria-selected', String(!encryptMode));
-  }
-
-  $('encryptButton').addEventListener('click', encrypt);
-  $('copyEncrypted').addEventListener('click', copyEncrypted);
-  $('decryptButton').addEventListener('click', decrypt);
-  $('clearEncrypt').addEventListener('click', clearEncrypt);
-  $('clearDecrypt').addEventListener('click', clearDecrypt);
-  $('clearAll').addEventListener('click', clearAll);
-  $('showEncrypt').addEventListener('click', () => show('encrypt'));
-  $('showDecrypt').addEventListener('click', () => show('decrypt'));
-  window.addEventListener('pagehide', clearAll);
-  window.addEventListener('beforeunload', clearAll);
+  const $=id=>document.getElementById(id),encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true}),ITERATIONS=310000,PREFIX='🔐EC3:',LEGACY_PREFIX='🔐EC2:';
+  const EMOJI=['😀','😁','😂','😃','😄','😅','😆','😉','😊','😋','😎','😍','😘','🥰','🤩','🤖'],EMOJI_TO_NIBBLE=new Map(EMOJI.map((v,i)=>[v,i]));
+  const wipe=v=>{if(v&&typeof v.fill==='function')v.fill(0)};
+  const concat=(...parts)=>{const out=new Uint8Array(parts.reduce((s,p)=>s+p.length,0));let o=0;for(const p of parts){out.set(p,o);o+=p.length}return out};
+  const bytesToEmoji=bytes=>{let out='';for(const b of bytes)out+=EMOJI[b>>>4]+EMOJI[b&15];return out};
+  const emojiToBytes=value=>{const s=Array.from(value);if(!s.length||s.length%2)throw new Error();const out=new Uint8Array(s.length/2);for(let i=0;i<s.length;i+=2){const h=EMOJI_TO_NIBBLE.get(s[i]),l=EMOJI_TO_NIBBLE.get(s[i+1]);if(h===undefined||l===undefined)throw new Error();out[i/2]=(h<<4)|l}return out};
+  const b64ToBytes=v=>Uint8Array.from(atob(v),c=>c.charCodeAt(0));
+  async function keyFromPassword(p,s){const m=await crypto.subtle.importKey('raw',p,'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:ITERATIONS,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+  async function encrypt(){const t=$('message'),p=$('password'),o=$('encryptedOutput'),s=$('encryptStatus');s.textContent='';o.textContent='';$('copyEncrypted').disabled=true;if(!globalThis.crypto?.subtle){s.textContent='Web Crypto ist in diesem Browser nicht verfügbar.';return}if(!t.value){s.textContent='Bitte eine Nachricht eingeben.';return}if(p.value.length<12){s.textContent='Das Passwort muss mindestens 12 Zeichen lang sein.';return}let a,b,c,d,e,f;try{a=encoder.encode(t.value);b=encoder.encode(p.value);c=crypto.getRandomValues(new Uint8Array(16));d=crypto.getRandomValues(new Uint8Array(12));const k=await keyFromPassword(b,c);e=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv:d},k,a));f=concat(c,d,e);o.textContent=PREFIX+bytesToEmoji(f);t.value='';p.value='';$('copyEncrypted').disabled=false;s.textContent='Verschlüsselt. Klartext und Passwort wurden aus den Eingabefeldern entfernt.'}catch{s.textContent='Verschlüsselung fehlgeschlagen.'}finally{wipe(a);wipe(b);wipe(c);wipe(d);wipe(e);wipe(f)}}
+  async function parseCiphertext(v){if(v.startsWith(PREFIX)){const p=emojiToBytes(v.slice(PREFIX.length));if(p.length<45){wipe(p);throw new Error()}return{payload:p,salt:p.slice(0,16),iv:p.slice(16,28),cipher:p.slice(28)}}if(v.startsWith(LEGACY_PREFIX)){const x=v.slice(LEGACY_PREFIX.length).split('.');if(x.length!==3)throw new Error();const salt=b64ToBytes(x[0]),iv=b64ToBytes(x[1]),cipher=b64ToBytes(x[2]);if(salt.length!==16||iv.length!==12||cipher.length<17){wipe(salt);wipe(iv);wipe(cipher);throw new Error()}return{payload:null,salt,iv,cipher}}throw new Error()}
+  async function decrypt(){const i=$('encryptedInput'),p=$('decryptPassword'),o=$('decryptedOutput'),s=$('decryptStatus');s.textContent='';o.textContent='';if(!globalThis.crypto?.subtle){s.textContent='Web Crypto ist in diesem Browser nicht verfügbar.';return}if(!i.value.trim()||!p.value){s.textContent='EmojiCrypt-Nachricht und Passwort werden benötigt.';return}let b,r,plain;try{const v=i.value.trim();b=encoder.encode(p.value);r=await parseCiphertext(v);const k=await keyFromPassword(b,r.salt);plain=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:r.iv},k,r.cipher));o.textContent=decoder.decode(plain);i.value='';p.value='';s.textContent=v.startsWith(LEGACY_PREFIX)?'Entschlüsselt. Älteres EC2-Format erkannt; neue Nachrichten werden als Emoji-Format EC3 erzeugt.':'Entschlüsselt. Eingabe und Passwort wurden aus den Feldern entfernt.'}catch{o.textContent='';s.textContent='Entschlüsselung fehlgeschlagen: falsches Passwort oder ungültige Nachricht.'}finally{wipe(b);wipe(plain);if(r){wipe(r.payload);wipe(r.salt);wipe(r.iv);wipe(r.cipher)}}}
+  async function copyEncrypted(){const v=$('encryptedOutput').textContent;if(!v)return;const s=$('encryptStatus');try{if(!navigator.clipboard?.writeText)throw new Error();await navigator.clipboard.writeText(v);s.textContent='Verschlüsselte Nachricht wurde kopiert.'}catch{const f=document.createElement('textarea');f.value=v;f.setAttribute('readonly','');f.style.position='fixed';f.style.opacity='0';document.body.appendChild(f);f.select();let copied=false;try{copied=document.execCommand('copy')}catch{}f.remove();s.textContent=copied?'Verschlüsselte Nachricht wurde kopiert.':'Kopieren wurde vom Browser blockiert. Markiere die Ausgabe und kopiere sie manuell.'}}
+  function clearEncrypt(){$('message').value='';$('password').value='';$('encryptedOutput').textContent='';$('encryptStatus').textContent='';$('copyEncrypted').disabled=true}function clearDecrypt(){$('encryptedInput').value='';$('decryptPassword').value='';$('decryptedOutput').textContent='';$('decryptStatus').textContent=''}function clearAll(){clearEncrypt();clearDecrypt()}function show(w){const e=w==='encrypt';$('encryptTab').classList.toggle('active',e);$('decryptTab').classList.toggle('active',!e);$('showEncrypt').classList.toggle('active',e);$('showDecrypt').classList.toggle('active',!e);$('showEncrypt').setAttribute('aria-selected',String(e));$('showDecrypt').setAttribute('aria-selected',String(!e))}
+  $('encryptButton').addEventListener('click',encrypt);$('copyEncrypted').addEventListener('click',copyEncrypted);$('decryptButton').addEventListener('click',decrypt);$('clearEncrypt').addEventListener('click',clearEncrypt);$('clearDecrypt').addEventListener('click',clearDecrypt);$('clearAll').addEventListener('click',clearAll);$('showEncrypt').addEventListener('click',()=>show('encrypt'));$('showDecrypt').addEventListener('click',()=>show('decrypt'));window.addEventListener('pagehide',clearAll);window.addEventListener('beforeunload',clearAll);
 })();
 </script>
 </body>
